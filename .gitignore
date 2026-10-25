@@ -1,0 +1,20 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+logs/
+
+# Node y Next
+node_modules/
+.next/
+*.tsbuildinfo
+
+# Secretos y sistema
+.env
+.env.local
+*.zip
+.DS_Store
+Thumbs.db
