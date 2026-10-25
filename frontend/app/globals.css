@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+/* Paleta tipo CoinMarketCap: azul noche de fondo, tarjetas un tono más claras y un azul vivo para lo pulsable.
+   Subida y bajada llevan siempre signo y flecha, nunca solo color. */
+:root {
+  color-scheme: light;
+  --paper: #f8fafd;
+  --surface: #ffffff;
+  --ink: #0d1421;
+  --ink-soft: #58667e;
+  --rule: #e3e8ef;
+  --up: #16a06b;
+  --down: #ea3943;
+  --accent: #3861fb;
+  --on-accent: #ffffff;
+  --btc: #f7931a;
+  --show-sun: none;
+  --show-moon: inline;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0d1421;
+  --surface: #171e2e;
+  --ink: #f2f5fa;
+  --ink-soft: #8d97ab;
+  --rule: #252e42;
+  --up: #16c784;
+  --down: #ff5a64;
+  --accent: #4a74ff;
+  --btc: #f7a642;
+  --show-sun: inline;
+  --show-moon: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --paper: #0d1421;
+    --surface: #171e2e;
+    --ink: #f2f5fa;
+    --ink-soft: #8d97ab;
+    --rule: #252e42;
+    --up: #16c784;
+    --down: #ff5a64;
+    --accent: #4a74ff;
+    --btc: #f7a642;
+    --show-sun: inline;
+    --show-moon: none;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-soft: var(--ink-soft);
+  --color-rule: var(--rule);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-btc: var(--btc);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "tnum" 1;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Titulares: con Inter no hay eje de anchura, así que esta clase no cambia nada; se conserva por si se vuelve a una fuente con ese eje. */
+.condensed {
+  font-variation-settings: "wdth" 75;
+}
+
+/* Cifras grandes con figuras proporcionales: las tabulares dejan huecos raros en tamaños de titular. */
+.hero-num {
+  font-feature-settings: "tnum" 0;
+  font-variant-numeric: proportional-nums;
+}
+
+.theme-sun {
+  display: var(--show-sun);
+}
+
+.theme-moon {
+  display: var(--show-moon);
+}
+
+/* Destello breve cuando cambia el precio. Es información (qué cambió), no adorno. */
+@keyframes flash-up {
+  from {
+    background-color: color-mix(in srgb, var(--up) 30%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes flash-down {
+  from {
+    background-color: color-mix(in srgb, var(--down) 30%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+.flash-up {
+  animation: flash-up 900ms ease-out;
+}
+
+.flash-down {
+  animation: flash-down 900ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-up,
+  .flash-down {
+    animation: none;
+  }
+}
+
+/* Gráficos: la línea se dibuja de izquierda a derecha y el área se funde después. `pathLength="1"` en el trazo. */
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-line 1.1s ease-out forwards;
+}
+
+.chart-area {
+  animation: fade-in 1s ease-out both;
+}
+
+.fade-in {
+  animation: fade-in 250ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .chart-area,
+  .fade-in {
+    animation: none;
+  }
+}
+
+/* Aviso breve que baja desde arriba. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-in {
+  animation: toast-in 250ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-in {
+    animation: none;
+  }
+}
+
+/* Fila de portafolio recién soltada: un destello que se apaga. */
+@keyframes drop-flash {
+  from {
+    background-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+.drop-flash {
+  animation: drop-flash 700ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .drop-flash {
+    animation: none;
+  }
+}
+
+/* Listas con desplazamiento: «clean» lo oculta del todo (se sigue pudiendo desplazar) y «thin» deja una barra fina y discreta. */
+.scroll-clean {
+  scrollbar-width: none;
+}
+
+.scroll-clean::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--ink-soft) 55%, transparent) transparent;
+}
+
+/* Listas con desplazamiento sin barra a la vista (se sigue pudiendo desplazar con la rueda, el dedo o el teclado). */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Barra fina y discreta para listas dentro de ventanas. */
+.scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-soft) transparent;
+}
+
+.scrollbar-slim::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background: var(--ink-soft);
+  border-radius: 9999px;
+}
+
+.scrollbar-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
